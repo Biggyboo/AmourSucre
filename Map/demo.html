@@ -10,20 +10,22 @@
 
 	<script src="./Leaflet.ImageOverlay.Rotated.js"></script>
 
+		<link rel="stylesheet" href="style.css"/>
+
 	<style>
 			body { margin:0px; padding:0px; width: 100vw; height:100vh; }
 	</style>
 </head>
 <body>
 
-	<div id="map" style='width:900px; height:700px;'></div>
+	<div id="map" style='width:1000px; height:700px;'></div>
 	<br>
 	<div>
-	Les étages :
-	<button onclick='setEtageCampus(0)'>RDC</button>
-	<button onclick='setEtageCampus(1)'>Etage 1</button>
-	<button onclick='setEtageCampus(2)'>Etage 2</button>
-	<button onclick='setEtageCampus(3)'>Etage 3</button>
+	<h1 style ="float:left;margin-right:8px;">Les étages :</h1>
+	<button onclick='setEtageCampus(0)' class="button">RDC </button>
+	<button onclick='setEtageCampus(1)' class="button">Etage 1</button>
+	<button onclick='setEtageCampus(2)' class="button">Etage 2</button>
+	<button onclick='setEtageCampus(3)' class="button">Etage 3</button>
 	</div>
 	<script type="text/javascript">
 
@@ -34,12 +36,12 @@
 			maxZoom:24
 		}).addTo(map);
 
-				//EN HAUT A DROITE
-		var point1 = L.latLng(47.205805, -1.538993),
-				//EN BAS A GAUCHE
-		    point2 = L.latLng(47.205671, -1.539334),
-				//EN BAS A DROITE
-		    point3 = L.latLng(47.206314, -1.539472);
+		//bas droite
+		var point1 = L.latLng(47.20585, -1.538941),
+		//bas gauche
+		point2 = L.latLng(47.205615, -1.539549),
+		//haut droite
+		point3 = L.latLng(47.206443, -1.539413);
 
 		var marker1 = L.marker(point1, {draggable: false, opacity:0} ).addTo(map),
 		    marker2 = L.marker(point2, {draggable: false, opacity:0} ).addTo(map),
@@ -50,7 +52,7 @@
 
 		map.fitBounds(bounds);
 
-		var overlay = L.imageOverlay.rotated("./RDC TRANSPARENCE PAS BO.png", point1, point2, point3, {
+		var overlay = L.imageOverlay.rotated("./RDCTRANS.png", point1, point2, point3, {
 			opacity: 1,
 			interactive: true,
 		});
@@ -59,27 +61,59 @@
 			overlay.reposition(marker1.getLatLng(), marker2.getLatLng(), marker3.getLatLng());
 		};
 
+	var markerAccueil =	L.marker([47.20620665197023, -1.5394694997048646], {fillColor:"#f00"}).addTo(map)
+		    .bindPopup('Accueil du campus HEP');
+
+		var hallIcon = L.divIcon({className: 'hall'});
+			var hall = 	L.marker([47.206256298280344, -1.539624334393352], {icon: hallIcon}).addTo(map)
+				.bindPopup('Hall cafétéria');
+
+		var centIcon = L.divIcon({className: 'cent'});
+			var cent = 	L.marker([47.20622349887383, -1.5396296988113818], {icon: centIcon}).addTo(map)
+				.bindPopup('Learning Lab');
+				map.removeLayer(cent);
+
+		var salleIcon = L.divIcon({className: 'salleCo'});
+			var salleCo = 	L.marker([47.20622349887383, -1.5396296988113818], {icon: salleIcon}).addTo(map)
+				.bindPopup('Salle co working');
+				map.removeLayer(salleCo);
 
 		function setEtageCampus(etage) {
 			if (etage == 0)
 			{
-			overlay.setUrl("./RDC TRANSPARENCE PAS BO.png");
+			overlay.setUrl("./RDCTRANS.png");
+			markerAccueil.addTo(map);
+			hall.addTo(map);
+
+			map.removeLayer(cent);
+			map.removeLayer(salleCo);
 			}
 			if (etage == 1)
 			{
-			overlay.setUrl("./P01_Plan_du_R+1.jpg");
+			overlay.setUrl("./ETAGE1TRANS.png");
+			map.removeLayer(markerAccueil);
+			map.removeLayer(hall);
+
+			cent.addTo(map);
 			}
 			if (etage == 2)
 			{
-			overlay.setUrl("./P02_Plan_du_R+2.jpg");
+			overlay.setUrl("./ETAGE2TRANS.png");
+			salleCo.addTo(map);
+
+			map.removeLayer(markerAccueil);
+			map.removeLayer(hall);
+			map.removeLayer(cent);
 			}
 			if (etage == 3)
 			{
-			overlay.setUrl("./P03_Plan_du_R+3.jpg");
+			overlay.setUrl("./ETAGE3TRANS.png");
+			map.removeLayer(salleCo);
 			}
 		}
 
 		map.addLayer(overlay);
+		map.addControl(new mapboxgl.NavigationControl());
 
 	</script>
 </body>
